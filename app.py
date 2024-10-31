@@ -2,12 +2,18 @@
 import os
 
 import aws_cdk as cdk
-
+from aws_cdk import App, Environment
 from cicd_resume.cicd_resume_stack import CicdResumeStack
 
 
 app = cdk.App()
-CicdResumeStack(app, "CicdResumeStack",
+
+env = Environment(
+    account=os.getenv("AWS_ACCOUNT_ID"),
+    region=os.getenv("AWS_REGION")
+)
+
+CicdResumeStack(app, "CicdResumeStack", env=env
     # If you don't specify 'env', this stack will be environment-agnostic.
     # Account/Region-dependent features and context lookups will not work,
     # but a single synthesized template can be deployed anywhere.
