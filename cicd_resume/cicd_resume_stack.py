@@ -20,7 +20,7 @@ class CicdResumeStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        deployment_bucket = aws_s3.Bucket(self, "WebDeplBucket")
+        deployment_bucket = aws_s3.Bucket(self, "WebDeplBucket", public_read_access=False)
 
         ui_dir = os.path.join(os.path.dirname(__file__), "..", 'website')
         if not os.path.exists(ui_dir):
@@ -49,16 +49,25 @@ class CicdResumeStack(Stack):
             domain_names=["echefulouis.com"],
             certificate=certificate,
             default_behavior=aws_cloudfront.BehaviorOptions(
-                origin = aws_cloudfront_origins.S3Origin(
-                    deployment_bucket, origin_access_identity=origin_identity
-                )
+                origin=aws_cloudfront_origins.S3Origin(deployment_bucket, origin_access_identity=origin_identity),
+                cache_policy=aws_cloudfront.CachePolicy.CACHING_OPTIMIZED,  # Set cache policy for performance
+                viewer_protocol_policy=aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,  # Redirect HTTP to HTTPS
             ),
         )
+
+        route53.ARecord(
+            self,
+            "SiteAliasRecord",
+            zone=hosted_zone,
+            target=route53.RecordTarget.from_alias(targets.CloudFrontTarget(distribution)),
+            record_name="echefulouis.com"
+        )
+
         aws_s3_deployment.BucketDeployment(self, "PyWebDeployment",
                                            destination_bucket=deployment_bucket,
                                            sources=[aws_s3_deployment.Source.asset(ui_dir)],
                                            distribution=distribution
                                            )
 
-        CfnOutput(self, "PyAppUrl",
-                  value=distribution.distribution_domain_name)
+        CfnOutput(self, "WebsiteURL", value="https://echefulouis.com")
+
