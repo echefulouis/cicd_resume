@@ -22,7 +22,10 @@ jobs:
       run: sudo npm i -g aws-cdk
     - name: Install deployment dependencies
       run: pip3 install -r requirements.txt
-    - name: CDK Synth
+    - name: Synthesize CDK
+      env:
+        CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+        CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
       run: cdk synth
     - name: CDK Deploy
       env:

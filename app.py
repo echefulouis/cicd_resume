@@ -8,9 +8,9 @@ from cicd_resume.cicd_resume_stack import CicdResumeStack
 
 app = cdk.App()
 
-env = Environment(
-    account=os.getenv("AWS_ACCOUNT_ID"),
-    region=os.getenv("AWS_REGION")
+env = cdk.Environment(
+    account=os.getenv("CDK_DEFAULT_ACCOUNT"),
+    region=os.getenv("CDK_DEFAULT_REGION")
 )
 
 CicdResumeStack(app, "CicdResumeStack", env=env
