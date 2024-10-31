@@ -13,7 +13,7 @@ env = Environment(
     region=os.getenv("AWS_REGION")
 )
 
-CicdResumeStack(app, "CicdResumeStack", env=env
+CicdResumeStack(app, "CicdResumeStack", domain_name="echefulouis.com", env=env
     # If you don't specify 'env', this stack will be environment-agnostic.
     # Account/Region-dependent features and context lookups will not work,
     # but a single synthesized template can be deployed anywhere.
