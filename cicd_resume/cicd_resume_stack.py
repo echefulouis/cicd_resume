@@ -15,7 +15,7 @@ from constructs import Construct
 import os
 
 
-class CicdPortfolioStack(Stack):
+class CicdResumeStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
